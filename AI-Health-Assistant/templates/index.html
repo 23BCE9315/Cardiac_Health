@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CardioAI — Heart Health Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/public/style.css"/>
+</head>
+<body>
+
+<!-- ── Sidebar ─────────────────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-pulse"></div>
+    <span>CardioAI</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <button class="nav-btn active" data-tab="chat" onclick="switchTab('chat',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+      </svg>
+      Medical Chat
+    </button>
+    <button class="nav-btn" data-tab="predict" onclick="switchTab('predict',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+      Heart Scan
+    </button>
+  </nav>
+
+  <div class="sidebar-info">
+    <div class="info-card">
+      <span class="info-icon">⚡</span>
+      <p><strong>Groq Powered</strong><br/>
+         LLaMA 3 via Groq — fast, accurate, structured medical answers.</p>
+    </div>
+    <div class="info-card">
+      <span class="info-icon">🎤</span>
+      <p><strong>Voice Input</strong><br/>
+         Click the mic button to speak your question.</p>
+    </div>
+    <div class="info-card">
+      <span class="info-icon">🔊</span>
+      <p><strong>Voice Output</strong><br/>
+         Click <em>Speak</em> on any response to hear it read aloud.</p>
+    </div>
+    <div class="info-card emergency-card">
+      <span class="info-icon">🚨</span>
+      <p><strong>Emergency?</strong><br/>
+         Ask: <em>"heart attack steps"</em> or <em>"how to do CPR"</em></p>
+    </div>
+  </div>
+
+  <div class="sidebar-disclaimer">
+    ⚠️ Educational only. Not a substitute for professional medical advice.
+    In emergencies, call your local emergency number immediately.
+  </div>
+</aside>
+
+<!-- ── Main ────────────────────────────────────────────────── -->
+<main class="main">
+
+  <!-- ── Chat Tab ── -->
+  <section id="tab-chat" class="tab active">
+    <header class="chat-header">
+      <div class="chat-header-left">
+        <h1>Medical Assistant</h1>
+        <span class="status-dot"></span>
+        <span class="status-text" id="status-text">Groq · LLaMA 3</span>
+      </div>
+      <div class="chat-header-right">
+        <button class="icon-btn" onclick="clearChat()" title="Clear chat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+          </svg>
+          Clear
+        </button>
+      </div>
+    </header>
+
+    <div class="chat-window" id="chat-window"></div>
+
+    <div class="chat-input-area">
+      <div class="input-row">
+        <textarea
+          id="chat-input"
+          placeholder="Ask about heart health, symptoms, CPR, diet…"
+          rows="1"
+          onkeydown="handleKey(event)"
+          oninput="autoResize(this)"
+        ></textarea>
+        <button class="mic-btn" id="mic-btn" title="Voice input" onclick="toggleVoice()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/>
+            <path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/>
+          </svg>
+        </button>
+        <button class="send-btn" onclick="sendChat()" title="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+      <div class="input-hint" id="voice-hint"></div>
+    </div>
+  </section>
+
+  <!-- ── Heart Scan Tab ── -->
+  <section id="tab-predict" class="tab">
+    <header class="chat-header">
+      <div class="chat-header-left">
+        <h1>Heart Disease Scanner</h1>
+        <span class="status-dot"></span>
+        <span class="status-text">Random Forest · 91.8% Accuracy</span>
+      </div>
+      <button class="icon-btn" onclick="startVoicePrediction()" title="Voice input">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/>
+          <path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/>
+        </svg>
+        &nbsp;Voice Input
+      </button>
+    </header>
+
+    <div class="predict-content">
+      <p class="predict-intro">
+        Enter your 13 clinical measurements below, or click
+        <strong>Voice Input</strong> to dictate them.
+      </p>
+
+      <div class="voice-guide">
+        <h3>🎤 Voice Guide</h3>
+        <p>Dictate all 13 values in order, separated by commas:</p>
+        <code>"63, 1, 3, 145, 233, 1, 0, 150, 0, 2.3, 0, 0, 1"</code>
+      </div>
+
+      <div class="predict-grid" id="predict-form"></div>
+
+      <div class="predict-actions">
+        <button class="btn-primary" onclick="submitPrediction()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          Run Analysis
+        </button>
+        <button class="btn-ghost" onclick="fillSample()">Load Sample</button>
+        <button class="btn-ghost" onclick="clearForm()">Clear</button>
+      </div>
+
+      <div id="predict-result" class="predict-result hidden"></div>
+    </div>
+  </section>
+
+</main>
+
+<script src="/public/script.js"></script>
+</body>
+</html>
